@@ -1,10 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
+//using System.Collections;
+//using System.Collections.Generic;
+//using System.Numerics;
 using UnityEngine;
 
 public class ProximityColor : MonoBehaviour
 {
-    public MouseInteractor interactor;
+    public MouseInteractor mouseInteractor;
+    public HandInteractor handInteractor;
+    public InteractionManager interactionManager;
 
     [Header("Proximity")]
     public float radius = 0.20f;
@@ -25,13 +28,27 @@ public class ProximityColor : MonoBehaviour
 
     void Update()
     {
-        if (interactor == null || !interactor.HasHit)
+        bool useHand = interactionManager != null && interactionManager.handMode;
+
+        Vector3 pointerWorld = Vector3.zero;
+        bool hasHit = false;
+        if (useHand && handInteractor != null)
+        {
+            pointerWorld = handInteractor.PointerWorld;
+            hasHit = handInteractor.HasHit;
+        }
+        else if (mouseInteractor != null)
+        {
+            pointerWorld = mouseInteractor.PointerWorld;
+            hasHit = mouseInteractor.HasHit;
+        }
+        if (!hasHit)
         {
             _mat.color = farColor;
             return;
         }
 
-        Vector3 pointerFlat = interactor.PointerWorld;
+        Vector3 pointerFlat = pointerWorld;
         pointerFlat.y = transform.position.y;
 
         float d = Vector3.Distance(pointerFlat, transform.position);        

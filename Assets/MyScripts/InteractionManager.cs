@@ -5,6 +5,7 @@ using UnityEngine;
 public class InteractionManager : MonoBehaviour
 {
     public MouseInteractor mouseInteractor;
+    public HandInteractor handInteractor;
 
     [Header("Mode")]
     public bool handMode = false; // later
@@ -14,7 +15,7 @@ public class InteractionManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             handMode = !handMode;
-            Debug.Log(handMode ? "Hand Mode (stub)" : "Mouse Mode");
+            Debug.Log(handMode ? "Hand Mode" : "Mouse Mode");
         }
 
         // Later: switch which interactor objects read from.
