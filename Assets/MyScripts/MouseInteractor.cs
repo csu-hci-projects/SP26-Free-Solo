@@ -9,18 +9,20 @@ public class MouseInteractor : MonoBehaviour
     public LayerMask raycastMask = ~0; // everything by default
 
     [Header("Output (read-only)")]
-    private Vector3 _pointerWorld;
+    private Vector3 _pointerWorld; // world position of mouse raycast hit
     private bool _hasHit;
     private bool _grabDown;
     private bool _grabHeld;
     private bool _grabUp;
 
-    public Vector3 PointerWorld { get { return _pointerWorld; } private set { _pointerWorld = value; } }
+    // Public read-only properties
+    public Vector3 PointerWorld { get { return _pointerWorld; } private set { _pointerWorld = value; } } 
     public bool HasHit { get { return _hasHit; } private set { _hasHit = value; } }
     public bool GrabDown { get { return _grabDown; } private set { _grabDown = value; } }
     public bool GrabHeld { get { return _grabHeld; } private set { _grabHeld = value; } }
     public bool GrabUp { get { return _grabUp; } private set { _grabUp = value; } }
 
+    
     void Awake()
     {
         if (mainCamera == null) mainCamera = Camera.main;
@@ -28,7 +30,7 @@ public class MouseInteractor : MonoBehaviour
 
     void Update()
     {
-        // Mouse button state
+        // Check Mouse button state
         GrabDown = Input.GetMouseButtonDown(0);
         GrabHeld = Input.GetMouseButton(0);
         GrabUp   = Input.GetMouseButtonUp(0);

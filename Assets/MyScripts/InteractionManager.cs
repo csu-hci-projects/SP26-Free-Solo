@@ -8,17 +8,14 @@ public class InteractionManager : MonoBehaviour
     public HandInteractor handInteractor;
 
     [Header("Mode")]
-    public bool handMode = false; // later
+    public bool handMode = false; // Starts in mouse mode
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab))  
         {
             handMode = !handMode;
-            Debug.Log(handMode ? "Hand Mode" : "Mouse Mode");
+            Debug.Log(handMode ? "Hand Mode" : "Mouse Mode"); // Log mode switch
         }
-
-        // Later: switch which interactor objects read from.
-        // For now you're always using mouseInteractor.
     }
 }

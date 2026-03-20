@@ -5,9 +5,9 @@ using Mediapipe.Tasks.Vision.HandLandmarker;
 public class HandInteractor : MonoBehaviour
 {
     [Header("Refs")]
-    public HandLandmarkerRunner runner;
+    public HandLandmarkerRunner runner; // reference to the MediaPipe hand landmark runner
     public Camera mainCamera;
-    public LayerMask raycastMask = ~0;
+    public LayerMask raycastMask = ~0; // layers to raycast against, default to everything
 
     [Header("Hand Mapping")]
     public float pinchThreshold = 0.05f;
@@ -19,7 +19,7 @@ public class HandInteractor : MonoBehaviour
     public bool GrabHeld { get; private set; }
     public bool GrabUp { get; private set; }
 
-    bool _prevPinch;
+    bool _prevPinch; // to track pinch state across frames
 
     // Data copied from MediaPipe callback thread
     readonly object _dataLock = new object();
@@ -37,13 +37,13 @@ public class HandInteractor : MonoBehaviour
     void OnEnable()
     {
         if (runner != null)
-            runner.OnResult += HandleResult;
+            runner.OnResult += HandleResult; // subscribe to hand landmark results
     }
 
     void OnDisable()
     {
         if (runner != null)
-            runner.OnResult -= HandleResult;
+            runner.OnResult -= HandleResult; // unsubscribe to avoid memory leaks
     }
 
     void Update()
@@ -57,9 +57,9 @@ public class HandInteractor : MonoBehaviour
         bool pinching;
         bool hasFreshData;
 
-        lock (_dataLock)
+        lock (_dataLock) // copy data from callback thread to main thread
         {
-            hasFreshData = _hasPendingHandData;
+            hasFreshData = _hasPendingHandData; // indicates if we got new hand data since last frame
             handVisible = _handVisible;
             indexTipNorm = _indexTipNorm;
             pinching = _pendingPinch;
@@ -69,26 +69,26 @@ public class HandInteractor : MonoBehaviour
         if (!hasFreshData)
             return;
 
-        if (!handVisible)
+        if (!handVisible) // if hand not visible rest
         {
             HasHit = false;
             UpdatePinchState(false);
             return;
         }
 
-        if (mainCamera == null)
+        if (mainCamera == null) 
         {
             HasHit = false;
             UpdatePinchState(false);
             return;
         }
 
-        float screenX = indexTipNorm.x * Screen.width;
-        float screenY = (1f - indexTipNorm.y) * Screen.height;
+        float screenX = indexTipNorm.x * Screen.width; // convert normalized coordinates to screen space
+        float screenY = (1f - indexTipNorm.y) * Screen.height; 
 
-        Ray ray = mainCamera.ScreenPointToRay(new Vector3(screenX, screenY, 0f));
+        Ray ray = mainCamera.ScreenPointToRay(new Vector3(screenX, screenY, 0f)); // raycast into the world from the index fingertip position
 
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, raycastMask, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, raycastMask, QueryTriggerInteraction.Ignore)) 
         {
             HasHit = true;
             PointerWorld = hit.point;
@@ -102,7 +102,7 @@ public class HandInteractor : MonoBehaviour
         Debug.Log($"Hand visible: {handVisible}, HasHit: {HasHit}, GrabHeld: {GrabHeld}");
     }
 
-    void HandleResult(HandLandmarkerResult result)
+    void HandleResult(HandLandmarkerResult result) // callback from MediaPipe thread with hand landmark results
     {
         bool handVisible = false;
         Vector2 indexTipNorm = Vector2.zero;
@@ -110,22 +110,22 @@ public class HandInteractor : MonoBehaviour
 
         if (result.handLandmarks != null && result.handLandmarks.Count > 0)
         {
-            var landmarks = result.handLandmarks[0];
+            var landmarks = result.handLandmarks[0]; //use first detected hand
 
-            if (landmarks.landmarks != null && landmarks.landmarks.Count > 8)
+            if (landmarks.landmarks != null && landmarks.landmarks.Count > 8) // ensure we have enough landmarks to get index fingertip and thumb tip
             {
-                var indexTip = landmarks.landmarks[8];
-                var thumbTip = landmarks.landmarks[4];
+                var indexTip = landmarks.landmarks[8]; // index fingertip is landmark 8 in MediaPipe hand model
+                var thumbTip = landmarks.landmarks[4]; // thumb tip is landmark 4
 
                 handVisible = true;
-                indexTipNorm = new Vector2(indexTip.x, indexTip.y);
+                indexTipNorm = new Vector2(indexTip.x, indexTip.y); // normalized coordinates (0-1) of index fingertip
 
-                float pinchDist = Vector2.Distance(
+                float pinchDist = Vector2.Distance( // distance between index fingertip and thumb tip in normalized screen space
                     new Vector2(indexTip.x, indexTip.y),
                     new Vector2(thumbTip.x, thumbTip.y)
                 );
 
-                pinching = pinchDist < pinchThreshold;
+                pinching = pinchDist < pinchThreshold; // consider it a pinch if distance is below threshold
             }
         }
 
@@ -138,7 +138,7 @@ public class HandInteractor : MonoBehaviour
         }
     }
 
-    void UpdatePinchState(bool pinching)
+    void UpdatePinchState(bool pinching) // update grab state based on pinch input, with one-frame GrabDown and GrabUp events
     {
         GrabDown = pinching && !_prevPinch;
         GrabUp = !pinching && _prevPinch;

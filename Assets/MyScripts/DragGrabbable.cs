@@ -1,44 +1,41 @@
-//using System.Collections;
-//using System.Collections.Generic;
-//using System.Numerics;
-
 using UnityEngine;
 //using UnityEngine.XR;
 
-[RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(Collider))] 
 [RequireComponent(typeof(Rigidbody))]
 public class DragGrabbable : MonoBehaviour
 {
     public MouseInteractor mouseInteractor;
     public HandInteractor handInteractor;
-    public InteractionManager interactionManager;
+    public InteractionManager interactionManager; // for mode switching
 
 
     public float followSpeed = 20f;   // higher = snappier
     public float surfaceLift = 0.0f;  // extra lift above table
     public float handGrabRadius = 0.35f; // max distance from hand pointer to grab
 
-    Rigidbody _rb;
+    Rigidbody _rb; 
     Collider _col;
     bool _grabbed;
-    Vector3 _grabOffset;
+    Vector3 _grabOffset; // from pointer to object center, in world space
 
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
         _col = GetComponent<Collider>();
 
-        _rb.interpolation = RigidbodyInterpolation.Interpolate;
+        _rb.interpolation = RigidbodyInterpolation.Interpolate; // smooth movement
     }
 
     void Update()
     {
-        bool useHand = interactionManager != null && interactionManager.handMode;
+        bool useHand = interactionManager != null && interactionManager.handMode; // check mode
 
+        //check for grab depending on mode
         if (useHand)
             UpdateHandGrab();
         else
-            UpdateMouseGrab();
+            UpdateMouseGrab(); 
     }
 
     void UpdateMouseGrab()
@@ -48,12 +45,12 @@ public class DragGrabbable : MonoBehaviour
         if (!_grabbed && mouseInteractor.GrabDown)
         {
             Ray ray = mouseInteractor.mainCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, 100f, mouseInteractor.raycastMask))
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f, mouseInteractor.raycastMask)) // raycast to find what we hit
             {
-                if (hit.collider != null && hit.collider.gameObject == gameObject && mouseInteractor.HasHit)
+                if (hit.collider != null && hit.collider.gameObject == gameObject && mouseInteractor.HasHit) // ensure we hit this object
                 {
                     _grabbed = true;
-                    _grabOffset = transform.position - mouseInteractor.PointerWorld;
+                    _grabOffset = transform.position - mouseInteractor.PointerWorld; // calculate offset from pointer to object center
                 }
             }
         }
@@ -66,12 +63,12 @@ public class DragGrabbable : MonoBehaviour
     {
         if (handInteractor == null) return;
 
-        if ( !_grabbed && handInteractor.GrabDown && handInteractor.HasHit)
+        if ( !_grabbed && handInteractor.GrabDown && handInteractor.HasHit) // check for grab input and valid hit
         {
-            Vector3 pointerFlat = handInteractor.PointerWorld;
+            Vector3 pointerFlat = handInteractor.PointerWorld; // flatten to horizontal plane for distance check
             pointerFlat.y = transform.position.y;
 
-            float d = Vector3.Distance(pointerFlat, transform.position);
+            float d = Vector3.Distance(pointerFlat, transform.position); // check distance from hand pointer to object
             if (d <= handGrabRadius)
             {
                 _grabbed = true;
@@ -84,7 +81,7 @@ public class DragGrabbable : MonoBehaviour
     }
 
 
-    void FixedUpdate()
+    void FixedUpdate() // physics update for smooth movement
     {
         if (!_grabbed) return;
 
