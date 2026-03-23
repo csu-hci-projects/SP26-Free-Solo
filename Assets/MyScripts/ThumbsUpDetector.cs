@@ -87,6 +87,9 @@ public class ThumbsUpDetector : MonoBehaviour
                 if (result.handedness != null && result.handedness.Count > i && result.handedness[i].categories.Count > 0) // check if we have handedness info for this hand
                 {
                     handLabel = result.handedness[i].categories[0].categoryName; // "Left" or "Right" as labeled by MediaPipe
+
+                    // Flip it
+                    handLabel = (handLabel == "Left") ? "Right" : "Left";
                 }
 
                 string msg = $"{handLabel} hand thumbs up!";
