@@ -28,10 +28,11 @@ Click "Play" in Unity Editor
 
 
 Controls:
-Mouse: 
+Mouse:
 
 Left Click: Grab / Release objects
 Move Mouse: Move pointer
+
 
 
 Keyboard:
@@ -76,4 +77,9 @@ Logs index finger position for interaction mapping
 
 Youtube Checkpoint 1 Progress Update:
 https://youtu.be/gF5QakT8TFI
+
+
+
+Overleadf:
+https://www.overleaf.com/read/spyrdwjdqqvd#48196f
 
