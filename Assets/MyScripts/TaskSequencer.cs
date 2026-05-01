@@ -2,25 +2,6 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 
-/// <summary>
-/// Drives the structured task sequence for the user study.
-///
-/// Tasks (from the paper §3.3):
-///   1. Select a specified object
-///   2. Move it to a target location
-///   3. Rotate it
-///   4. Undo an action
-///   5. Delete an object
-///
-/// The sequencer:
-///  - displays the current task prompt via HUDController
-///  - logs task-start and task-end timestamps via GestureEventLogger
-///  - waits for the participant (or experimenter) to press Space to advance
-///
-/// To integrate auto-detection of task completion, replace the
-/// WaitForSpaceBar coroutine with your own completion logic
-/// (e.g., check object position against a target zone).
-/// </summary>
 public class TaskSequencer : MonoBehaviour
 {
     [Header("Refs")]

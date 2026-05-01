@@ -1,23 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Central hub for all object manipulation commands.
-/// Handles: selection tracking, Delete, Rotate, Undo
-/// Works from both gesture events AND keyboard shortcuts.
-///
-/// SELECTION MODEL:
-///   Grabbing an object selects it persistently — it stays selected after
-///   you release. This allows gesture commands (fist, point) to fire on the
-///   last-touched object without needing to hold the grab simultaneously.
-///   Selection clears when you grab a different object or click empty space.
-///
-/// Keyboard shortcuts (always active):
-///   Delete / Backspace  → Delete selected object
-///   R                   → Rotate selected object
-///   Ctrl+Z              → Undo last manipulation
-///   Escape              → Deselect
-/// </summary>
 public class SelectionManager : MonoBehaviour
 {
     public static SelectionManager Instance { get; private set; }

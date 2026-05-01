@@ -3,11 +3,6 @@ using Mediapipe.Unity.Sample.HandLandmarkDetection;
 using Mediapipe.Tasks.Vision.HandLandmarker;
 using Mediapipe.Tasks.Components.Containers;
 
-/// <summary>
-/// Detects Thumbs Up (thumb extended upward, all other fingers folded).
-/// Uses vote buffer + dwell timer for reliability.
-/// Fires OnUndoGesture which SelectionManager subscribes to.
-/// </summary>
 public class ThumbsUpDetector : MonoBehaviour
 {
     [Header("Refs")]

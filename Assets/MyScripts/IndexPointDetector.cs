@@ -3,10 +3,6 @@ using Mediapipe.Unity.Sample.HandLandmarkDetection;
 using Mediapipe.Tasks.Vision.HandLandmarker;
 using Mediapipe.Tasks.Components.Containers;
 
-/// <summary>
-/// Detects Index Point Up (only index finger extended, others curled, thumb tucked).
-/// Uses a vote buffer + dwell timer for reliability.
-/// </summary>
 public class IndexPointDetector : MonoBehaviour
 {
     [Header("Refs")]

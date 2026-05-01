@@ -3,16 +3,6 @@ using Mediapipe.Unity.Sample.HandLandmarkDetection;
 using Mediapipe.Tasks.Vision.HandLandmarker;
 using Mediapipe.Tasks.Components.Containers;
 
-/// <summary>
-/// Detects a Closed Fist gesture (all five fingers fully curled).
-///
-/// Reliability improvements over naive tip-vs-pip:
-///  1. Vote buffer: gesture must appear in N of the last M frames before the
-///     dwell timer even starts (filters single-frame noise).
-///  2. Dwell timer: gesture must then stay stable for dwellTime seconds.
-///  3. Cooldown: prevents repeated triggers.
-///  4. Thumb uses distance to palm rather than just y-position.
-/// </summary>
 public class ClosedFistDetector : MonoBehaviour
 {
     [Header("Refs")]

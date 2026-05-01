@@ -1,11 +1,6 @@
 using UnityEngine;
 using TMPro;
 
-/// <summary>
-/// Drives the on-screen HUD. Uses a singleton so SelectionManager
-/// and detectors can call HUDController.Instance.ShowGesture() directly
-/// without fragile event subscriptions.
-/// </summary>
 public class HUDController : MonoBehaviour
 {
     public static HUDController Instance { get; private set; }
