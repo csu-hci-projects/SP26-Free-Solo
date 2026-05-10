@@ -1,0 +1,239 @@
+%%
+%% CS 465 Research Paper
+%% Webcam Hand Gestures for Desktop Interaction
+%% Author: Jaden Shelton
+%% Formatted for CHI 2026 using acmart sigconf template
+%%
+
+\documentclass[manuscript]{acmart}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    Bib\TeX}}}
+
+%% Rights / conference info — update these when submitting
+\setcopyright{acmlicensed}
+\copyrightyear{2026}
+\acmYear{2026}
+\acmDOI{XXXXXXX.XXXXXXX}
+\acmConference[CS 465]{CS 465: Human-Computer Interaction}{Spring 2026}{Colorado State University, Fort Collins, CO}
+\acmISBN{N/A}
+
+%%
+%% end of preamble, start of document
+%%
+\begin{document}
+
+\title{Webcam Hand Gestures for Desktop Interaction}
+
+\author{Jaden Shelton}
+\affiliation{%
+  \institution{Colorado State University}
+  \city{Fort Collins}
+  \state{Colorado}
+  \country{USA}
+}
+\email{jaden.shelton@colostate.edu}
+
+\renewcommand{\shortauthors}{Shelton}
+
+%%
+%% Abstract
+%%
+\begin{abstract}
+Keyboard and mouse have dominated desktop and laptop computing for decades. Meanwhile, hand gesture recognition has matured in augmented and virtual reality contexts, but rarely reaches the standard desktop environment. This paper presents a prototype webcam-based gesture system built in Unity using the MediaPipe hand tracking library, and a within-subjects user study (n = 5) evaluating whether a small set of hand gestures used alongside mouse and keyboard can improve usability and task performance for 3D object manipulation on a standard laptop or desktop. Participants completed structured manipulation tasks—selecting, moving, rotating, deleting, and undoing operations on simple 3D objects—under two conditions: mouse and keyboard only, and mouse, keyboard, and hand gestures. Post-study survey results indicate that the gesture-augmented condition was well received, with participants rating gesture recognition reliability and intuitiveness positively. The fist-to-delete gesture was consistently rated the most natural, while pinch-based selection received the most redesign suggestions. Fatigue from holding the arm up was the most commonly cited discomfort. These findings support the potential of multimodal gesture augmentation for desktop interaction while highlighting specific gesture design areas for future improvement.
+\end{abstract}
+
+%%
+%% CCS Concepts — generated via https://dl.acm.org/ccs/ccs.cfm
+%%
+\begin{CCSXML}
+<ccs2012>
+ <concept>
+  <concept_id>10003120.10003121.10003122</concept_id>
+  <concept_desc>Human-centered computing~Gestural input</concept_desc>
+  <concept_significance>500</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>10003120.10003121.10003124.10010865</concept_id>
+  <concept_desc>Human-centered computing~User studies</concept_desc>
+  <concept_significance>300</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>10003120.10003121.10003122.10003334</concept_id>
+  <concept_desc>Human-centered computing~Desktop GUIs</concept_desc>
+  <concept_significance>100</concept_significance>
+ </concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Human-centered computing~Gestural input}
+\ccsdesc[300]{Human-centered computing~User studies}
+\ccsdesc[100]{Human-centered computing~Desktop GUIs}
+
+\keywords{hand gesture recognition, webcam, desktop interaction, MediaPipe, multimodal input, 3D object manipulation, HCI}
+
+\maketitle
+
+%%
+%% 1. Introduction
+%%
+\section{Introduction}
+
+Keyboard and mouse have been the dominant input devices for desktop and laptop computing for decades, and despite how much computers have advanced and changed over the years, that has remained the same. Augmented and virtual reality systems have pushed hand gesture interaction forward in HCI research, and these computing environments offer more direct and immersive ways to manipulate digital content. Most of this innovation has been confined to the specialized hardware that AR/VR uses, but open-source solutions like MediaPipe have matured and could bring similar interaction techniques to the standard desktop or laptop environment.
+
+This brings up the question: can a small set of hand gestures be used alongside keyboard and mouse to meaningfully improve HCI with the types of computers we are accustomed to using every day? Particularly, could gesture input benefit the experience of performing 3D object manipulation tasks on a normal desktop or laptop? Prior work on hand gesture recognition has largely focused on recognition accuracy, sensing technology comparisons, and gesture design in specialized environments~\cite{guo2021, rautaray2015}. Studies that do examine gesture usability for desktop tasks, such as Farhadi-Niaki et al., have found promise in finger-based gestures for object manipulation but have typically relied on dedicated depth cameras rather than the average webcam hardware most users already own~\cite{farhadi2013}. In addition, research on gesture fatigue has made it clear that gesture interaction works best as a complement to existing input devices rather than a wholesale replacement. It was found that users could not sustain mid-air gesture input for very long without significant physical discomfort~\cite{hansberger2017}.
+
+This project investigates whether webcam-based hand gesture input, designed as a supplement to mouse and keyboard input, could improve usability and task performance for 3D object manipulation on a standard desktop or laptop computer. The remainder of this paper reviews related work in Section 2, describes the prototype system and study design in Section 3, presents study results in Section 4, and discusses findings, limitations, and future directions in Sections 5 through 8.
+
+%%
+%% 2. Related Work
+%%
+\section{Related Work}
+
+Research on hand gesture recognition (HGR) for human–computer interaction has been ongoing for decades, covering sensing technologies, gesture design, physical ergonomics, and multimodal interaction. This section reviews the prior work most relevant to this project: HGR sensing approaches, gesture design for intuitive interaction, the overall usability of gesture-only input, and multimodal gesture approaches in interactive environments.
+
+\subsection{Hand Gesture Recognition Technologies}
+
+There is a broad range of HGR research that covers many different sensing approaches, each with its own advantages and disadvantages. Guo et al.\ reviewed several HGR technologies utilizing gloves, cameras, ultrasound, and electromyography techniques to detect and identify hand gestures, and praised camera-based recognition for having a relatively high accuracy while also being more enjoyable for users since it did not require any special hardware~\cite{guo2021}. This allows for a more comfortable experience that is well suited for dynamic gesture recognition, though one is limited by the camera's field of view.
+
+Rautaray and Agrawal explored camera-based HGR systems thoroughly and identified three fundamental phases common to all systems: detection, tracking, and recognition~\cite{rautaray2015}. Their survey found that desktop applications were one of the most frequently targeted areas in HGR research, even though the technology has not yet found many real-world use cases. They identified several obstacles to gesture interaction: reliability, speed, and intuitiveness~\cite{rautaray2015}.
+
+The technology this project uses, MediaPipe, was developed by Zhang et al.\ at Google Research~\cite{zhang2020}. The hand recognition in MediaPipe is a two-stage pipeline made up of the BlazePalm detector, which localizes the hand in the full frame, and a landmark model that predicts 21 2.5D key points on the detected hand. The pipeline is optimized for real-time inference on devices such as a desktop or laptop and does not require any specialized hardware. This design makes MediaPipe well suited for testing the usability of gesture input in a common everyday desktop or laptop environment.
+
+\subsection{Practical Gesture Design}
+
+A major challenge in gesture-based HCI is designing gestures that feel intuitive to users. Much prior research has had gestures defined from the system designer's perspective. In a paper by Wobbrock et al., it is argued that choosing gestures should be based on actual user behavior~\cite{wobbrock2009}. In their study, Wobbrock et al.\ recruited 20 non-technical participants and asked them to invent gestures for given commands, producing a user-defined gesture set based on the consensus of participant preferences. Overall, they found that even in non-desktop environments, participants still associated certain actions with common Windows or Mac interface elements. They also found that some commands did not generate a decisive gesture, suggesting that hybrid interfaces and multimodal interaction could be more advantageous in those scenarios~\cite{wobbrock2009}.
+
+Another study by Farhadi-Niaki et al.\ tested a vision-based gesture recognition system in a simulated desktop environment~\cite{farhadi2013}. Their system tested both finger-only gestures and full-arm gestures for common desktop tasks, and they evaluated several usability factors including efficiency, precision, ease of use, naturalness, and user satisfaction. They found that finger-based inputs were superior to arm-based ones in the long run, largely because arm gestures caused significantly more fatigue and felt less natural to users~\cite{farhadi2013}. This is a primary reason why this project focuses on finger and hand-based gestures rather than large arm-based movements, creating a more compact interaction technique for a seated desk-based workflow.
+
+\subsection{Gesture Limitations}
+
+Even with smaller hand and finger-based gestures, this input type as a primary modality can cause user fatigue. Hansberger et al.\ studied this problem directly and compared mid-air gestures, keyboard input, and supported gestures over a 30-minute interaction session~\cite{hansberger2017}. Their results were significant: only 25\% of participants could complete a full 30-minute session using conventional mid-air gestures, compared to 100\% completion for both the keyboard and supported gesture conditions. They referred to the arm fatigue caused by mid-air gestures as \textit{gorilla arm syndrome}, a significant limiting factor when designing HGR interaction systems. These findings support the multimodal design for this project. Rather than replacing keyboard and mouse entirely, hand gestures serve as a supplement and can be performed from a supported, more relaxed position when seated at a desk to reduce potential fatigue.
+
+\subsection{Object Manipulation and 3D Environments}
+
+Gesture interaction has been studied extensively in 3D and immersive environments, often combined with different modalities to facilitate object manipulation. Rodriguez et al.\ conducted a study with artists using a VR 3D sketching application and examined which interaction modalities the artists preferred for different tasks~\cite{rodriguez2024}. The pattern they recognized was that artists particularly favored gestures for direct object manipulation tasks such as sculpting and erasing, but preferred their controller for menu navigation and tool selection. This shows the alignment between hand gestures and more spatial, physical operations—an alignment that is consistent with the gesture command set chosen for this project.
+
+Plabst et al.\ examined multimodal interaction in an augmented reality environment, studying how users managed notifications while completing other tasks simultaneously, and found that no single modality dominated across all task types~\cite{plabst2025}. They examined a large array of multimodal interaction methods combining gaze, pinch, point, speech, and touch. Their work found that each modality had its own advantages and disadvantages across various tasks, which is a key reason behind the motivation for allowing multiple interaction techniques rather than limiting a user to a single modality.
+
+All in all, this collection of prior work establishes the potential and limitations of gesture-based HCI and the advantages of multimodal design.
+
+%%
+%% 3. Methodology
+%%
+\section{Methodology}
+
+This project evaluates whether a small set of webcam-based hand gestures used alongside a standard mouse and keyboard can improve usability and task performance for common 3D object manipulation tasks on a laptop or desktop. The methodology covers three parts: the prototype system, the gesture set, and the user study design.
+
+\subsection{Prototype System}
+
+The prototype was built in Unity using C\# and runs on a standard desktop or laptop with a webcam. Hand tracking is handled by the MediaPipe Unity plugin, which processes the live camera feed and outputs real-time hand landmark skeleton data from the webcam~\cite{zhang2020}. The hand detection is a two-part system: a BlazePalm detector first finds the hand in the frame, then a landmark model predicts 2.5D positions of the fingers and joints. The palm detector is very efficient and only runs on the first frame or when tracking is lost; otherwise, the hand region is based on the previous frame, keeping the system efficient enough for real-time desktop or laptop use.
+
+Gesture recognition is built directly on top of these landmarks using geometric logic. For each frame, the state of all the fingers is tracked and determined to be either extended or curled based on the estimated y-position of each fingertip landmark compared against the corresponding knuckle landmark. Gestures are classified by particular finger combinations; each of the five defined hand gesture poses has its own unique combination of finger positions. To prevent accidental triggers, a gesture must remain stable for approximately 0.5 seconds before a command fires. All gesture events are time-stamped and logged automatically throughout testing sessions.
+
+The 3D workspace presents participants with several simple objects—cubes, spheres, and cylinders—arranged in a neutral scene. A heads-up display along the top of the screen shows the name of the last recognized gesture or command and a webcam picture-in-picture. The webcam preview shows the landmark skeleton overlay on the participant's hand if visible, assisting participants in understanding what the system is detecting and reducing confusion during gesture input.
+
+\subsection{Gesture Set}
+
+There are five total gestures available to users during object manipulation tasks. Two of the gestures mirror common mouse behaviors for object control, and three substitute for keyboard shortcuts. The set was designed to be visually distinct so that landmark-based detection would be more reliable in classifying each separate gesture. The gestures also aim to carry a natural physical association with their mapped actions, following the design principles defined by Wobbrock et al.~\cite{wobbrock2009}.
+
+The two mouse-like gestures are: (1)~\textbf{Pinch} (thumb and index finger together) to select an object, with a sustained pinch and hand movement used to drag the selected object across the scene. This is intended as a direct alternative to the common mouse click-and-drag action.
+
+The three shortcut-style gestures are: (2)~\textbf{Thumbs Up} (all fingers curled, thumb extended upward) mapped to undo, (3)~\textbf{Closed Fist} (all fingers fully curled) mapped to delete, and (4)~\textbf{Index Point Up} (only index finger extended, thumb tucked) mapped to rotate. The thumbs-up-to-undo mapping was chosen for its simplicity and memorability. The fist-to-delete mapping was chosen to mimic a crushing or closing metaphor for removing content. Index-point-to-rotate was chosen because it is easily identifiable and signals focused attention on the object.
+
+These gestures keep the hand in a natural, low-fatigue position for brief periods of time, consistent with the guidance from Hansberger et al.~\cite{hansberger2017}. Each pose is also sufficiently distinct to make misclassification less likely: thumbs up and index point are distinguished by which landmark is highest, and the closed fist has no extended fingertips at all. Table~\ref{tab:gestures} summarizes the complete gesture set.
+
+\begin{table}
+  \caption{Gesture Set Summary}
+  \label{tab:gestures}
+  \begin{tabular}{llll}
+    \toprule
+    Gesture & Command & Keyboard Equiv. \\
+    \midrule
+    Pinch          & Select / Move    & Mouse click + drag \\
+    Thumbs Up      & Undo             & Ctrl+Z \\
+    Closed Fist    & Delete           & Delete key \\
+    Index Point    & Rotate           & R key \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{User Study}
+
+The study uses a within-subjects design in which each participant completes the same task set under three conditions: keyboard and mouse only, hand gestures only, and keyboard, mouse, and hand gestures. In all the conditions, participants complete a series of structured object manipulation tasks: selecting a specified object, moving it to a target location, rotating it, undoing an action, and deleting an object. The task sequences are equivalent across conditions so that performance and usability can be compared directly. 
+
+Following all 3 sets of tasks, participants completed a short questionnaire asking which gestures felt most intuitive for their mapped commands, whether they preferred gesture or keyboard or mouse for each input type, and their overall satisfaction rating of each gesture on a 5-point scale. At the end of the session, participants were asked to reflect on how quickly they felt they learned the gesture set and completed several open-ended free-response questions about which gestures felt most natural, which were most frustrating, and what they would change. This post-session feedback allows the study to evaluate both usability and user preference.
+
+\section{Results}
+
+\subsection{Phase 1: Mouse and Keyboard}
+
+In the mouse-and-keyboard only phase, the participants rated the naturalness of mouse and keyboard for 3D object manipulation positively overall. On a 5-point scale, 60\% of participants gave a rating of 5 (Very Natural) and 40\% gave a rating of 4, none of the participants had a rating below 4. Select and Move were rated the easiest tasks, with most participants selecting 4 or 5. Rotate and Delete received slightly more spread in ratings but still trended toward the easy end of the scale. As expected, people are very comfortable doing basic object manipulation with a conventional mouse and keyboard.
+
+\subsection{Phase 2: Hand Gesture Condition}
+
+Participants were asked to rate each gesture 1 through 5 based on intuitiveness (1 being not intuitive at all and 5 being very intuitive). The Fist to Delete gesture was the most consistently praised, with the participants describing it as the most natural and making the most sense. Pinch to Select and Pinch to Move received very moderate ratings. Some of the participants found the pinch detection tricky and I found that many of the participants would try and pinch with their whole hand which sometimes would get confused as a fist gesture instead. Index Point Up to Rotate and Thumbs Up to Undo received the lowest intuitive ratings overall though.
+
+Next the participants were asked about the perceived reliability of the gesture recognition. Again this was rated on a 5 point scale with 60\% of participants giving a reliability score of 4, 20\% giving a score 5, and 20\% gave a score of 3. No participants rated reliability below a 3. This indicates that the system was generally very dependable, with most of the occasional hiccups due to confusion with the pinch/fist gesture or user error.
+
+Overall fatigue and discomfort was also inquired about during this phase. Participants were asked if any particular gesture was tiring or uncomfortable and they were also asked if just holding their arm up in general caused any discomfort throughout the testing. About half of the participants said that holding their arm up in general caused some discomfort with one participant particularly citing the pinch gesture as uncomfortable. 2 participants said that they experienced no discomfort at all. These results do align with the gorilla arm effect described by Hansberger et al. [3], where sustained midair posture can produce noticeable fatigue. While these hand gestures were designed to be able to be done while resting your elbow on the desk for increased comfort, most participants did not do that without direction to do so.
+
+\subsection{Phase 3: Free-Choice and Overall Preferences}
+
+The last phase was a free-choice phase, participants were again asked to complete a set of actions but this time the participants could complete them using the mouse and keyboard, hand gestures, or a combination of both. About 40\% ended up using mostly hand gestures, 40\% used a mixed combination utilizing the gestures for specific tasks, and 20\% used mostly mouse and keyboard. No participant used exclusively mouse and keyboard during this last free choice phase, which suggest that some of the gesture set was seen as useful though this could have also been because of the novelty and extra “fun” that the gestures provided.
+
+\subsection{Learning Curve}
+
+Participants were asked at the end how hard the gesture set was to learn. Participants were shown a brief demonstration of the gesture set, but then were expected to remember the controls on their own after that. A few participants had to be reminded of specific gestures but 80\% of the participants reported feeling comfortable with the gestures within the first few minutes.
+
+\subsection{Qualitative Feedback}
+
+At the end of the survey the participants were asked to respond to several open-ended free response questions, and these closely mirrored the other quantitative measures. The fist to delete gesture was cited the most frequently as the most natural and intuitive gesture, with multiple participants independently noting that it “just makes sense”. The pinch gesture was most frequently cited as frustrating to users. This is an observation I made while watching each participant. Participants naturally wanted to grab objects with all of their fingers not just their pointer and thumb, this caused the gesture recognition to be less reliable in those instances.
+
+Participants were also asked for redesign suggestions. Two participants suggested changes to the rotate gesture: one proposed a two-handed wheel turning motion, and another suggested a single hand claw shape hand gesture rotation. One participant suggested a Point to Select style gesture to replace the pinch to select. Participants all in all enjoyed the experience citing it as a “fun”, “futuristic”, and overall “very cool experience”.
+
+\section{Discussion}
+
+The results of this study offer some encouraging evidence that a small webcam based gesture set could be integrated into a mouse and keyboard workflow without too much friction or annoyance. It was clear though that gesture metaphor strength is very important. The fist to delete gesture was the clear stand out for intuitiveness. Fist to delete had the strongest physical metaphor as it mimicked a closing or crushing action, which many participants felt made it more memorable. This is consistent with the principles from Wobbrock et al. [7], who found that participants do tend to gravitate toward gestures that carry a spatial or physical association with the action. The pinch gesture also had a fairly strong physical metaphor, though it could have been implemented better so it didn’t suffer from the inconsistent recognition reliability issue that came from the participants various ways of finger positioning.
+
+Arm and gesture fatigue still showed up as a concern from the participants. Despite the relative short duration of the study session, still about half of the participants cited some discomfort while performing gestures. This reaffirms some of the findings from Hansberger et al. [3] and suggests that brief gesture interaction can produce noticeable fatigue especially with less experienced users. Future studies should explore providing explicit support and directions to help reduce arm fatigue and explore how gestures can be minimized in a keyboard and mouse environment while still providing a significant amount of usefulness.
+
+The multimodal augmentation for object manipulation was an improvement but not yet transformative. No participant disliked the use of the gestures; however the neutral responses suggest that the current gesture set does not yet offer enough benefit over existing mouse and keyboard controls to significantly change their habits. This was similar with Plabst et al [4], who found that different modalities shined for different task types. Continuing to iterate gesture design for webcams may be needed for users to feel a strong pull to use them as an alternative to mouse and keyboard controls. 
+
+\section{Limitations}
+
+This study did have several limitations that constrain the conclusions that can be drawn from it. First the sample size of 5 participants was small and was demographically skewed as most of the participants were in the young adult 18-22 age range. These results most likely won’t translate to older users, or those with less technology experience. 
+
+This study also did not collect objective performance metrics such as task completion time or error counts in a structured form. A larger study with formal timing measures would be needed to make quantitative claims. 
+
+Additionally, the 3D workspace used was very simple and only provided a few very basic object manipulation controls. A more complex real-world application like CAD modeling, game level editing, or 3D animation work, may produce different finding where actions are more complex and more varied.
+
+Finally, participants were not given an extended practice period with the gestures and were only given a short demonstration. The participants did report they felt comfortable with the gestures within the first few minutes, but a longer familiarization phase may be beneficial and improve performance and preference ratings.
+
+\section{Future Work}
+
+Future work could go several directions from this study. Immediately, a larger study with a more representative participant pool and adding counterbalanced task ordering across more session would allow for a more statistically robust study and gather more information on whether gestures can really improve performance in a desktop environment. 
+
+The rotate gesture is also a clear candidate for redesign. Participant suggestion of a two handed wheel turning metaphor could be a significant improvement to intuitiveness for that gesture in a future study. The pinch to select/move gesture is also a good candidate and could be redesigned completely or the landmark geometry approach could be altered to make recognition of it feel more consistent.
+
+Every participant had at least a few instances of accidental gestures and this could be improved upon by adding a Push-to-Gesture button similar to a Push-to-Talk function to help eliminate mistaken gesture recognition when users move their hand around between gestures.
+
+Finally, testing the system in a real-world creative application or work flow, such as 3D modeling, illustration, or animation could provide a stronger validity test of whether gesture augmentation delivers a meaningful productivity benefit beyond the 3D manipulation task used in this study.
+
+\section{Conclusion}
+This project investigated whether a small set of webcam-based hand gestures, used alongside a standard mouse and keyboard input, could improve the usability and perceived intuitiveness of 3D object manipulation on a normal desktop or laptop computer. A prototype using Unity and the Media Pipe hand tracking library was evaluated in a study with five participants.
+
+The results showed that the gesture set was received fairly well, but could use some improvements. Participants were able to learn the gesture set quickly and overall rated the recognition favorably. The fist to delete gesture stood out as consistently the most natural and memorable gesture, while pinch-based selection and rotate gestures were identified as the gestures needing the most improvement. Arm fatigue from the sustained mid-air posture was the most frequently cited physical concern. This reinforces the importance of designing gesture interaction to be short and infrequent rather than long continuous actions.
+
+Many of these findings are consistent with the broader literature, multimodal gesture augmentation does show promise as a complement to traditional input types, but the quality of the gesture-action mapping and the reliability of the recognition system are critical for user acceptance. With some refinement to the weakest gestures and larger follow studies, webcam-based gesture interaction could become a practical and accessible addition to the standard desktop or laptop workflow.
+
+
+%%
+%% Bibliography
+%%
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{CS465-references}
+
+\end{document}
+\endinput
