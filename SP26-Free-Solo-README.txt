@@ -7,9 +7,9 @@ FINAL VIDEOS:
   (DOWNLOAD LINK) - []
 
 Google Drive Link to Unity Projct File (Some file sizes are too large for Github) - https://drive.google.com/drive/folders/1c3MeQIrEibY5lD3DNW1pxpoH4eL0PU9f?usp=share_link 
-LaTeX file in repo, link: https://github.com/YOUR_USERNAME/SP26-Free-Solo/tree/main/LaTeX-Source
+LaTeX file in repo, link: https://github.com/csu-hci-projects/SP26-Free-Solo/tree/main/LaTex-Source
 Overleaf link: - https://www.overleaf.com/read/spyrdwjdqqvd#48196f
-PDF-LiteratureSurvey Link: - https://github.com/YOUR_USERNAME/SP26-Free-Solo/tree/main/PDFs-LiteratureSurvey
+PDF-LiteratureSurvey Link: - https://github.com/csu-hci-projects/SP26-Free-Solo/tree/main/PDFs-LiteratureSurvey 
 
 Work Allocation: 
 Techincal Demo/ Videos: Jaden Shelton
