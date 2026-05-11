@@ -25,9 +25,8 @@ INSTRUCTIONS FOR RUNNING THE APP:
    Closed Fist = Delete, Index Point Up = Rotate
 
 OTHER NOTES: 
-- Solo project by Jaden Shelton, CS 465 Spring 2026, Colorado State University
 - Study was conducted with 5 participants using a within-subjects design
-- The prototype runs on any standard desktop or laptop with a built-in or
-  external webcam; no specialized hardware is required
+- The prototype should run on any standard desktop or laptop with a built-in or
+  external webcam; was only tested on a macbook pro though
 - The gesture recognition uses landmark geometry logic built on top of
   MediaPipe hand tracking.
