@@ -13,7 +13,7 @@ public class MouseInteractor : MonoBehaviour
     private bool _grabHeld;
     private bool _grabUp;
 
-    // Public read-only properties
+    
     public Vector3 PointerWorld { get { return _pointerWorld; } private set { _pointerWorld = value; } } 
     public bool HasHit { get { return _hasHit; } private set { _hasHit = value; } }
     public bool GrabDown { get { return _grabDown; } private set { _grabDown = value; } }

@@ -69,7 +69,6 @@ public class DragGrabbable : MonoBehaviour
             UpdateHandGrab();
     }
 
-    // ---------------------------------------------------------------
     void UpdateMouseGrab()
     {
         if (mouseInteractor == null) return;
@@ -127,7 +126,7 @@ public class DragGrabbable : MonoBehaviour
         SelectionManager.Instance?.NotifyReleased(this);
     }
 
-    // ---------------------------------------------------------------
+
     void FixedUpdate()
     {
         if (!_grabbed) return;
@@ -167,7 +166,7 @@ public class DragGrabbable : MonoBehaviour
         _rb.MovePosition(next);
     }
 
-    // ---------------------------------------------------------------
+
     bool RaycastFloorPlane(Ray ray, out Vector3 hitPoint)
     {
         hitPoint = Vector3.zero;

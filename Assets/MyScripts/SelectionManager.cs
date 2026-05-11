@@ -24,7 +24,7 @@ public class SelectionManager : MonoBehaviour
     DragGrabbable _selected;
     Color         _originalColor;
     bool          _hadEmission;
-    Material      _selectedMat; // cached so we can restore it
+    Material      _selectedMat; 
 
     readonly Stack<UndoRecord> _undoStack = new Stack<UndoRecord>();
 
@@ -85,10 +85,7 @@ public class SelectionManager : MonoBehaviour
             ClearSelection();
     }
 
-    /// <summary>
-    /// If the player clicks and the raycast misses all objects, clear selection.
-    /// This gives mouse-mode users a natural way to deselect.
-    /// </summary>
+    
     void HandleMouseDeselect()
     {
         if (mouseInteractor == null) return;
@@ -96,9 +93,7 @@ public class SelectionManager : MonoBehaviour
             ClearSelection();
     }
 
-    // ---------------------------------------------------------------
-    // Selection registration — called by DragGrabbable
-    // ---------------------------------------------------------------
+
     public void Select(DragGrabbable obj)
     {
         if (_selected == obj) return; // already selected
@@ -124,10 +119,7 @@ public class SelectionManager : MonoBehaviour
         HUDController.Instance?.ShowGesture($"Selected: {obj.gameObject.name}");
     }
 
-    /// <summary>
-    /// Called by DragGrabbable on release — selection is intentionally KEPT.
-    /// The object stays selected so gesture commands can act on it.
-    /// </summary>
+
     public void NotifyReleased(DragGrabbable obj)
     {
         // Selection persists — nothing to do here.
@@ -150,10 +142,7 @@ public class SelectionManager : MonoBehaviour
         _selectedMat = null;
     }
 
-    /// <summary>
-    /// Called by DragGrabbable just before it begins moving so we can record
-    /// a pre-move snapshot for undo.
-    /// </summary>
+
     public void RecordPreMove(DragGrabbable obj)
     {
         _undoStack.Push(new UndoRecord
@@ -167,9 +156,7 @@ public class SelectionManager : MonoBehaviour
 
     public DragGrabbable CurrentSelection => _selected;
 
-    // ---------------------------------------------------------------
-    // Commands — called by both gesture detectors and keyboard
-    // ---------------------------------------------------------------
+
     public void HandleDelete()
     {
         if (_selected == null)
@@ -192,7 +179,7 @@ public class SelectionManager : MonoBehaviour
         ClearSelection(); // removes highlight before hiding
         toHide.SetActive(false);
 
-        HUDController.Instance?.ShowGesture("✊ Fist  →  Deleted");
+        HUDController.Instance?.ShowGesture("Fist  →  Deleted");
     }
 
     public void HandleRotate()
@@ -215,7 +202,7 @@ public class SelectionManager : MonoBehaviour
         _selected.transform.Rotate(rotateAxis, rotateStep, Space.World);
         Debug.Log($"[SelectionManager] Rotated: {_selected.gameObject.name}");
 
-        HUDController.Instance?.ShowGesture("☝ Point  →  Rotated");
+        HUDController.Instance?.ShowGesture("Point  →  Rotated");
     }
 
     public void HandleUndo()
@@ -223,7 +210,7 @@ public class SelectionManager : MonoBehaviour
         if (_undoStack.Count == 0)
         {
             Debug.Log("[SelectionManager] Undo — stack empty.");
-            HUDController.Instance?.ShowGesture("👍 Thumbs Up  →  Nothing to undo");
+            HUDController.Instance?.ShowGesture("Thumbs Up  →  Nothing to undo");
             return;
         }
 
@@ -235,6 +222,6 @@ public class SelectionManager : MonoBehaviour
         r.obj.transform.rotation = r.rotation;
         Debug.Log($"[SelectionManager] Undone: {r.obj.name}");
 
-        HUDController.Instance?.ShowGesture("👍 Thumbs Up  →  Undone");
+        HUDController.Instance?.ShowGesture("Thumbs Up  →  Undone");
     }
 }

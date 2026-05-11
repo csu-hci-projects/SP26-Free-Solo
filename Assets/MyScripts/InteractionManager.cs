@@ -16,8 +16,8 @@ public class InteractionManager : MonoBehaviour
             string modeLabel = handMode ? "Hand Mode (gestures + mouse/keyboard)" : "Mouse Mode";
             Debug.Log($"[InteractionManager] Switched to: {modeLabel}");
             HUDController.Instance?.ShowGesture(handMode
-                ? "✋ Hand Mode ON — gestures, mouse & keyboard active"
-                : "🖱 Mouse Mode — mouse & keyboard only");
+                ? "Hand Mode ON — gestures, mouse & keyboard active"
+                : "Mouse Mode — mouse & keyboard only");
         }
     }
 }

@@ -94,9 +94,6 @@ public class ThumbsUpDetector : MonoBehaviour
         lock (_lock) _pendingThumb = found;
     }
 
-    // ---------------------------------------------------------------
-    // Geometry
-    // ---------------------------------------------------------------
     bool IsThumbsUp(NormalizedLandmarks hand)
     {
         var lm = hand.landmarks;
@@ -110,8 +107,7 @@ public class ThumbsUpDetector : MonoBehaviour
         bool ringFolded   = lm[16].y > lm[14].y;
         bool pinkyFolded  = lm[20].y > lm[18].y;
 
-        // Extra: thumb tip must be above the wrist (landmark 0) to ensure
-        // the thumb is genuinely pointing up and not sideways
+        // Extra: thumb tip must be above the wrist (landmark 0) to ensure the thumb is pointing up and not sideways
         bool thumbAboveWrist = lm[4].y < lm[0].y;
 
         return thumbUp && indexFolded && middleFolded && ringFolded && pinkyFolded && thumbAboveWrist;

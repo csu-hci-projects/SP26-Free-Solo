@@ -25,7 +25,7 @@ public class ProximityColor : MonoBehaviour
 
     void Update()
     {
-        bool useHand = interactionManager != null && interactionManager.handMode; // check if we're in hand mode
+        bool useHand = interactionManager != null && interactionManager.handMode; 
 
         Vector3 pointerWorld = Vector3.zero; // world position of pointer (hand or mouse)
         bool hasHit = false;
@@ -41,12 +41,12 @@ public class ProximityColor : MonoBehaviour
         }
         if (!hasHit)
         {
-            _mat.color = farColor; // if we don't have a valid pointer position, treat it as far
+            _mat.color = farColor; // if don't have a valid pointer position treat as far
             return;
         }
 
         Vector3 pointerFlat = pointerWorld; 
-        pointerFlat.y = transform.position.y; // ignore vertical distance for proximity check, so we can be "near" even if we're above the object
+        pointerFlat.y = transform.position.y; // ignore vertical distance for proximity check so we can be near even if we're above the object
 
         float d = Vector3.Distance(pointerFlat, transform.position);    // distance from pointer to object center     
         _mat.color = (d <= radius) ? nearColor : farColor; // set color based on proximity threshold

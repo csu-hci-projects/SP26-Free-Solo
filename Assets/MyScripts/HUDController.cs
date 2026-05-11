@@ -31,8 +31,8 @@ public class HUDController : MonoBehaviour
         if (modeLabel != null && interactionManager != null)
         {
             modeLabel.text = interactionManager.handMode
-                ? "✋  Hand Mode  (Tab to switch)"
-                : "🖱  Mouse Mode  (Tab to switch)";
+                ? "Hand Mode  (Tab to switch)"
+                : "Mouse Mode  (Tab to switch)";
         }
 
         // Auto-clear gesture label
@@ -44,7 +44,7 @@ public class HUDController : MonoBehaviour
         }
     }
 
-    /// <summary>Show text on the gesture label for <gestureLabelDuration> seconds.</summary>
+
     public void ShowGesture(string text)
     {
         if (gestureLabel == null) return;

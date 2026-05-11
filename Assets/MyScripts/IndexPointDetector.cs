@@ -94,15 +94,12 @@ public class IndexPointDetector : MonoBehaviour
         lock (_lock) _pendingPoint = found;
     }
 
-    // ---------------------------------------------------------------
-    // Geometry
-    // ---------------------------------------------------------------
+
     bool IsIndexPoint(NormalizedLandmarks hand)
     {
         var lm = hand.landmarks;
 
-        // Index extended: tip (8) clearly above PIP (6)
-        // Use a margin so a slightly bent index doesn't count
+        // Index extended: tip (8) clearly above (6)
         bool indexExtended = lm[8].y < lm[6].y - 0.03f;
 
         // Other fingers folded
@@ -110,7 +107,7 @@ public class IndexPointDetector : MonoBehaviour
         bool ringFolded   = lm[16].y > lm[14].y;
         bool pinkyFolded  = lm[20].y > lm[18].y;
 
-        // Thumb tucked — tip near index MCP
+        // Thumb tucked 
         float thumbToIndexMcp = Dist2D(lm[4], lm[5]);
         bool thumbTucked = thumbToIndexMcp < 0.15f;
 

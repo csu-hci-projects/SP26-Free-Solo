@@ -35,7 +35,7 @@ public class ClosedFistDetector : MonoBehaviour
     bool  _dwellActive    = false;
     float _lastTrigger    = -999f;
 
-    // ---------------------------------------------------------------
+    
     void Awake()
     {
         _voteBuffer = new bool[voteBufferSize];
@@ -126,9 +126,8 @@ public class ClosedFistDetector : MonoBehaviour
         bool pinkyFolded  = lm[20].y > lm[18].y;
 
         // Thumb: tip should be close to the index MCP (landmark 5) — indicates tucked
-        // Use 2D distance in normalized space
         float thumbToIndexMcp = Dist2D(lm[4], lm[5]);
-        bool thumbTucked = thumbToIndexMcp < 0.12f; // tune if needed
+        bool thumbTucked = thumbToIndexMcp < 0.12f; 
 
         return indexFolded && middleFolded && ringFolded && pinkyFolded && thumbTucked;
     }

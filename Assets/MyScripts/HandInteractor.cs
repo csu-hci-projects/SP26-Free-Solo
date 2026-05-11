@@ -48,7 +48,7 @@ public class HandInteractor : MonoBehaviour
 
     void Update()
     {
-        // one-frame flags reset at start of frame
+    
         GrabDown = false;
         GrabUp = false;
 
@@ -57,7 +57,7 @@ public class HandInteractor : MonoBehaviour
         bool pinching;
         bool hasFreshData;
 
-        lock (_dataLock) // copy data from callback thread to main thread
+        lock (_dataLock) 
         {
             hasFreshData = _hasPendingHandData; // indicates if we got new hand data since last frame
             handVisible = _handVisible;
@@ -112,13 +112,13 @@ public class HandInteractor : MonoBehaviour
         {
             var landmarks = result.handLandmarks[0]; //use first detected hand
 
-            if (landmarks.landmarks != null && landmarks.landmarks.Count > 8) // ensure we have enough landmarks to get index fingertip and thumb tip
+            if (landmarks.landmarks != null && landmarks.landmarks.Count > 8) 
             {
                 var indexTip = landmarks.landmarks[8]; // index fingertip is landmark 8 in MediaPipe hand model
                 var thumbTip = landmarks.landmarks[4]; // thumb tip is landmark 4
 
                 handVisible = true;
-                indexTipNorm = new Vector2(indexTip.x, indexTip.y); // normalized coordinates (0-1) of index fingertip
+                indexTipNorm = new Vector2(indexTip.x, indexTip.y); 
 
                 float pinchDist = Vector2.Distance( // distance between index fingertip and thumb tip in normalized screen space
                     new Vector2(indexTip.x, indexTip.y),
